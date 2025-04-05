@@ -25,6 +25,8 @@
 cmake_minimum_required(VERSION 3.7.2)
 
 project(fobos LANGUAGES C)
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_EXTENSIONS OFF)
 
 include(GNUInstallDirs)
 message(>>> "CMAKE_INSTALL_LIBDIR: " ${CMAKE_INSTALL_LIBDIR})
@@ -232,15 +234,6 @@ target_link_libraries(fobos_fwloader PRIVATE libfobos)
 
 target_include_directories(fobos_fwloader PRIVATE ${CMAKE_SOURCE_DIR}/fobos)
 ########################################################################
-
-set_target_properties(
-    libfobos
-    fobos_devinfo
-    fobos_fwloader
-    fobos_fwloader
-    PROPERTIES
-    C_STANDARD 99
-)
 
 ########################################################################
 # Directories
