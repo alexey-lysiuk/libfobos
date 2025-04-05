@@ -36,7 +36,14 @@ jobs:
     - name: Install Dependencies
       shell: bash
       run: |
-        ${{ matrix.toolchain.deps }}
+        if [[ "${{ runner.os }}" == 'Linux' ]]; then
+          sudo apt-get update && sudo apt-get install libusb-1.0-0-dev
+        elif [[ "${{ runner.os }}" == 'Windows' ]]; then
+          LIBUSB_VERSION=1.0.28
+          LIBUSB_PACKAGE=libusb-$LIBUSB_VERSION.7z
+          aria2c -q https://github.com/libusb/libusb/releases/download/v$LIBUSB_VERSION/$LIBUSB_PACKAGE
+          7zz x $LIBUSB_PACKAGE -olibusb
+        fi
 
     - name: Configure
       shell: bash
