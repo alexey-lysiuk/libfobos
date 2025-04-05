@@ -58,7 +58,7 @@ jobs:
       shell: bash
       run: |
         export MAKEFLAGS=--keep-going
-        cmake --build build --config Release --parallel ${{ steps.cpu-cores.outputs.count }}
+        cmake --build build --verbose --config Release --parallel ${{ steps.cpu-cores.outputs.count }}
 
     - name: Install
       shell: bash
