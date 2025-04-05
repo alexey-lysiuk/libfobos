@@ -24,7 +24,7 @@
 ########################################################################
 cmake_minimum_required(VERSION 3.7.2)
 
-project(fobos C)
+project(fobos LANGUAGES C)
 set(CMAKE_C_STANDARD 99)
 
 include(GNUInstallDirs)
