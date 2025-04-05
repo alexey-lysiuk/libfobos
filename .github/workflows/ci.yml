@@ -1,0 +1,61 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.toolchain.name }}
+    runs-on: ${{ matrix.toolchain.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+        - name: Linux Clang
+          os: ubuntu-24.04
+          cmake_args: -DCMAKE_C_COMPILER=clang
+
+        - name: Linux GCC
+          os: ubuntu-24.04
+
+        - name: macOS Intel
+          os: macos-13
+
+        - name: macOS ARM
+          os: macos-14
+
+        - name: MSVC 32-bit
+          os: windows-2022
+          cmake_args: -A Win32
+
+        - name: MSVC 64-bit
+          os: windows-2022
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      shell: bash
+      run: |
+        ${{ matrix.toolchain.deps }}
+
+    - name: Configure
+      shell: bash
+      run: |
+        cmake -B build ${{ matrix.toolchain.cmake_args }} .
+
+    - name: Get Number of CPU Cores
+      uses: SimenB/github-actions-cpu-cores@v2
+      id: cpu-cores
+
+    - name: Build
+      shell: bash
+      run: |
+        export MAKEFLAGS=--keep-going
+        cmake --build build --config Release --parallel ${{ steps.cpu-cores.outputs.count }}
+
+    - name: List Build Directory
+      if: always()
+      shell: bash
+      run: |
+        git status
+        ls -lR build
