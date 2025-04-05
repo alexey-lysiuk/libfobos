@@ -45,15 +45,14 @@ endif(NOT CMAKE_BUILD_TYPE)
 # Compiler specific setup
 ########################################################################
 if(MSVC)
-    ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
-    ADD_DEFINITIONS(-D_TIMESPEC_DEFINED)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_TIMESPEC_DEFINED)
 else()
-    ADD_DEFINITIONS(-Wall)
-    ADD_DEFINITIONS(-Wextra)
-    ADD_DEFINITIONS(-Wno-unused-parameter)
-    ADD_DEFINITIONS(-Wno-unused)
-    ADD_DEFINITIONS(-Wsign-compare)
-    ADD_DEFINITIONS(-ansi)
+    add_definitions(-Wall)
+    add_definitions(-Wextra)
+    add_definitions(-Wno-unused-parameter)
+    add_definitions(-Wno-unused)
+    add_definitions(-Wsign-compare)
 endif()
 ########################################################################
 
@@ -140,7 +139,7 @@ set_target_properties(libfobos PROPERTIES OUTPUT_NAME fobos)
 ########################################################################
 # Install public header files
 ########################################################################
-INSTALL(
+install(
     FILES fobos/fobos.h
     DESTINATION include
 )
@@ -149,7 +148,7 @@ INSTALL(
 ########################################################################
 # Install built library files & utilities
 ########################################################################
-INSTALL(
+install(
     TARGETS libfobos
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
@@ -158,29 +157,29 @@ INSTALL(
 ########################################################################
 # Create Pkg Config File
 ########################################################################
-FOREACH(inc ${LIBUSB_INCLUDEDIR})
-    LIST(APPEND LIBFOBOS_PC_CFLAGS "-I${inc}")
-ENDFOREACH(inc)
+foreach(inc ${LIBUSB_INCLUDEDIR})
+    list(APPEND LIBFOBOS_PC_CFLAGS "-I${inc}")
+endforeach(inc)
 
 FOREACH(lib ${LIBUSB_LIBRARY_DIRS})
-    LIST(APPEND LIBFOBOS_PC_LIBS "-L${lib}")
-ENDFOREACH(lib)
+    list(APPEND LIBFOBOS_PC_LIBS "-L${lib}")
+endforeach(lib)
 
 # use space-separation format for the pc file
-STRING(REPLACE ";" " " LIBFOBOS_PC_CFLAGS "${LIBFOBOS_PC_CFLAGS}")
-STRING(REPLACE ";" " " LIBFOBOS_PC_LIBS "${LIBFOBOS_PC_LIBS}")
+string(REPLACE ";" " " LIBFOBOS_PC_CFLAGS "${LIBFOBOS_PC_CFLAGS}")
+string(REPLACE ";" " " LIBFOBOS_PC_LIBS "${LIBFOBOS_PC_LIBS}")
 
 set(prefix "${CMAKE_INSTALL_PREFIX}")
 set(exec_prefix \${prefix})
 set(includedir \${prefix}/include)
 set(libdir \${exec_prefix}/lib)
 
-CONFIGURE_FILE(
+configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/libfobos.pc.in
     ${CMAKE_CURRENT_BINARY_DIR}/libfobos.pc
 @ONLY)
 
-INSTALL(
+install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/libfobos.pc
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )

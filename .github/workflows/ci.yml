@@ -66,7 +66,14 @@ jobs:
       run: |
         sudo cmake --install build
 
-    # TODO: test
+    - name: Test
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == 'Windows' ]]; then
+          build/Release/fobos_devinfo.exe
+        else
+          ./build/fobos_devinfo
+        fi
 
     - name: List Build Directory
       if: always()
