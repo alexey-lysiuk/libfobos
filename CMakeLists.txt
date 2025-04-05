@@ -202,6 +202,10 @@ add_custom_target(uninstall
 ########################################################################
 add_executable(fobos_devinfo
     eval/fobos_devinfo_main.c)
+
+target_link_libraries(fobos_devinfo PRIVATE libfobos)
+
+target_include_directories(fobos_devinfo PRIVATE ${CMAKE_SOURCE_DIR}/fobos)
 ########################################################################
 
 ########################################################################
@@ -211,7 +215,11 @@ add_executable(fobos_recorder
     eval/fobos_recorder_main.c
     wav/wav_file.c)
 
+target_link_libraries(fobos_recorder PRIVATE libfobos)
+
 target_include_directories(fobos_recorder PRIVATE ${CMAKE_SOURCE_DIR})
+
+target_include_directories(fobos_recorder PRIVATE ${CMAKE_SOURCE_DIR}/fobos)
 ########################################################################
 
 ########################################################################
@@ -219,10 +227,12 @@ target_include_directories(fobos_recorder PRIVATE ${CMAKE_SOURCE_DIR})
 ########################################################################
 add_executable(fobos_fwloader
     eval/fobos_fwloader_main.c)
+
+target_link_libraries(fobos_fwloader PRIVATE libfobos)
+
+target_include_directories(fobos_fwloader PRIVATE ${CMAKE_SOURCE_DIR}/fobos)
 ########################################################################
 
-target_link_libraries(fobos_devinfo fobos_recorder fobos_fwloader PRIVATE libfobos)
-target_include_directories(fobos_devinfo fobos_recorder fobos_fwloader PRIVATE ${CMAKE_SOURCE_DIR}/fobos)
 
 ########################################################################
 # Directories
