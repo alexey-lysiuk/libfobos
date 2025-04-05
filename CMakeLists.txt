@@ -25,7 +25,6 @@
 cmake_minimum_required(VERSION 3.7.2)
 
 project(fobos LANGUAGES C)
-set(CMAKE_C_STANDARD 99)
 
 include(GNUInstallDirs)
 message(>>> "CMAKE_INSTALL_LIBDIR: " ${CMAKE_INSTALL_LIBDIR})
@@ -66,12 +65,13 @@ if(PKG_CONFIG_FOUND)
         set(LIBUSB_LIBRARIES "${LIBUSB_LINK_LIBRARIES}")
     endif()
 else()
-if (CMAKE_VS_PLATFORM_NAME STREQUAL Win32)
-	set(LIBUSB_LIBRARIES ${CMAKE_SOURCE_DIR}/libusb/MS32/dll)
-endif()
-if (CMAKE_VS_PLATFORM_NAME STREQUAL x64)
-    set(LIBUSB_LIBRARIES ${CMAKE_SOURCE_DIR}/libusb/MS64/dll)
-endif()
+	set(LIBUSB_VS_VERSION 2022)  # TODO
+    if (CMAKE_VS_PLATFORM_NAME STREQUAL Win32)
+        set(LIBUSB_LIBRARIES ${CMAKE_SOURCE_DIR}/libusb/${LIBUSB_VS_VERSION}/MS32/dll)
+    endif()
+    if (CMAKE_VS_PLATFORM_NAME STREQUAL x64)
+        set(LIBUSB_LIBRARIES ${CMAKE_SOURCE_DIR}/libusb/${LIBUSB_VS_VERSION}/MS64/dll)
+    endif()
     set(LIBUSB_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/libusb/include)
 endif()
 if(PKG_CONFIG_FOUND AND NOT LIBUSB_FOUND)
@@ -233,6 +233,14 @@ target_link_libraries(fobos_fwloader PRIVATE libfobos)
 target_include_directories(fobos_fwloader PRIVATE ${CMAKE_SOURCE_DIR}/fobos)
 ########################################################################
 
+set_target_properties(
+    libfobos
+    fobos_devinfo
+    fobos_fwloader
+    fobos_fwloader
+    PROPERTIES
+    C_STANDARD 99
+)
 
 ########################################################################
 # Directories
