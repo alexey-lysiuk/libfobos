@@ -88,14 +88,15 @@ jobs:
     - name: Test Linux/macOS
       if: runner.os != 'Windows'
       run: |
-        ./build/fobos_devinfo
+        build/fobos_devinfo
 
     - name: Test MinGW
       if: startsWith(matrix.toolchain.name, 'MinGW')
+      shell: cmd
       run: |
-        cd build
-        ls -l
-        ./fobos_devinfo.exe
+        dumpbin /HEADERS fobos_devinfo.exe
+        dumpbin /IMPORTS fobos_devinfo.exe
+        build/fobos_devinfo.exe
 
     - name: Test MSVC
       if: startsWith(matrix.toolchain.name, 'MSVC')
