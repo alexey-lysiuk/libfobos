@@ -86,9 +86,14 @@ jobs:
         sudo cmake --install build
 
     - name: Test
-      if: ${{ ! startsWith(matrix.toolchain.name, 'MSVC') }}
+      if: runner.os != 'Windows'
       run: |
         ./build/fobos_devinfo
+
+    - name: Test MinGW
+      if: startsWith(matrix.toolchain.name, 'MinGW')
+      run: |
+        build/fobos_devinfo.exe
 
     - name: Test MSVC
       if: startsWith(matrix.toolchain.name, 'MSVC')
