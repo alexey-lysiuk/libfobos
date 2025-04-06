@@ -61,7 +61,7 @@ jobs:
         aria2c -q https://github.com/libusb/libusb/releases/download/v$LIBUSB_VERSION/$LIBUSB_PACKAGE
         7z x $LIBUSB_PACKAGE -olibusb
 
-    - name: Install MSYS2
+    - name: Install MinGW
       if: startsWith(matrix.toolchain.name, 'MinGW')
       uses: msys2/setup-msys2@v2
       with:
@@ -80,12 +80,12 @@ jobs:
         export MAKEFLAGS=--keep-going
         cmake --build build --config Release --parallel ${{ steps.cpu-cores.outputs.count }}
 
-    - name: Install
+    - name: Install Linux/macOS
       if: runner.os != 'Windows'
       run: |
         sudo cmake --install build
 
-    - name: Test
+    - name: Test Linux/macOS
       if: runner.os != 'Windows'
       run: |
         ./build/fobos_devinfo
@@ -93,7 +93,9 @@ jobs:
     - name: Test MinGW
       if: startsWith(matrix.toolchain.name, 'MinGW')
       run: |
-        build/fobos_devinfo.exe
+        cd build
+        ls -l
+        ./fobos_devinfo.exe
 
     - name: Test MSVC
       if: startsWith(matrix.toolchain.name, 'MSVC')
