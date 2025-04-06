@@ -45,14 +45,18 @@ endif(NOT CMAKE_BUILD_TYPE)
 # Compiler specific setup
 ########################################################################
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    add_definitions(-D_TIMESPEC_DEFINED)
+    add_definitions(
+        -D_CRT_SECURE_NO_WARNINGS
+        -D_TIMESPEC_DEFINED
+    )
 else()
-    add_definitions(-Wall)
-    add_definitions(-Wextra)
-    add_definitions(-Wno-unused-parameter)
-    add_definitions(-Wno-unused)
-    add_definitions(-Wsign-compare)
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wno-unused-parameter
+        -Wno-unused
+        -Wsign-compare
+    )
 endif()
 ########################################################################
 
