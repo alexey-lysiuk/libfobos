@@ -2,14 +2,15 @@ name: CI
 
 on: [push, pull_request]
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   build:
     name: ${{ matrix.toolchain.name }}
     runs-on: ${{ matrix.toolchain.os }}
+
+    defaults:
+      run:
+        shell: bash
+
     strategy:
       fail-fast: false
       matrix:
@@ -21,11 +22,19 @@ jobs:
         - name: Linux GCC
           os: ubuntu-24.04
 
+        - name: macOS ARM
+          os: macos-14
+
         - name: macOS Intel
           os: macos-13
 
-        - name: macOS ARM
-          os: macos-14
+        - name: MinGW 32-bit
+          os: windows-2022
+          cmake_args: -G "MinGW Makefiles" -A Win32
+
+        - name: MinGW 64-bit
+          os: windows-2022
+          cmake_args: -G "MinGW Makefiles"
 
         - name: MSVC 32-bit
           os: windows-2022
@@ -47,6 +56,10 @@ jobs:
           aria2c -q https://github.com/libusb/libusb/releases/download/v$LIBUSB_VERSION/$LIBUSB_PACKAGE
           7z x $LIBUSB_PACKAGE -olibusb
         fi
+
+    - name: Install MSYS2
+      if: startsWith(matrix.toolchain.name, 'MinGW')
+      uses: msys2/setup-msys2@v2
 
     - name: Configure
       run: |
