@@ -70,24 +70,33 @@ if(PKG_CONFIG_FOUND)
         set(LIBUSB_LIBRARIES "${LIBUSB_LINK_LIBRARIES}")
     endif()
 else()
-    if(MSVC_VERSION EQUAL 1800)
-        set(LIBUSB_VS_VERSION VS2013)
-    elseif(MSVC_VERSION EQUAL 1900)
-        set(LIBUSB_VS_VERSION VS2015)
-    elseif((MSVC_VERSION GREATER_EQUAL 1910) AND (MSVC_VERSION LESS_EQUAL 1919))
-        set(LIBUSB_VS_VERSION VS2017)
-    elseif((MSVC_VERSION GREATER_EQUAL 1920) AND (MSVC_VERSION LESS_EQUAL 1929))
-        set(LIBUSB_VS_VERSION VS2019)
-    else()
-        set(LIBUSB_VS_VERSION VS2022)
-    endif()
-    if (CMAKE_VS_PLATFORM_NAME STREQUAL Win32)
-        set(LIBUSB_LIBRARIES ${CMAKE_SOURCE_DIR}/libusb/${LIBUSB_VS_VERSION}/MS32/dll)
-    endif()
-    if (CMAKE_VS_PLATFORM_NAME STREQUAL x64)
-        set(LIBUSB_LIBRARIES ${CMAKE_SOURCE_DIR}/libusb/${LIBUSB_VS_VERSION}/MS64/dll)
+    if(MSVC)
+        if(MSVC_VERSION EQUAL 1800)
+            set(LIBUSB_SUFFIX VS2013)
+        elseif(MSVC_VERSION EQUAL 1900)
+            set(LIBUSB_SUFFIX VS2015)
+        elseif((MSVC_VERSION GREATER_EQUAL 1910) AND (MSVC_VERSION LESS_EQUAL 1919))
+            set(LIBUSB_SUFFIX VS2017)
+        elseif((MSVC_VERSION GREATER_EQUAL 1920) AND (MSVC_VERSION LESS_EQUAL 1929))
+            set(LIBUSB_SUFFIX VS2019)
+        else()
+            set(LIBUSB_SUFFIX VS2022)
+        endif()
+
+        if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+            set(LIBUSB_SUFFIX "${LIBUSB_SUFFIX}/MS32")
+        else()
+            set(LIBUSB_SUFFIX "${LIBUSB_SUFFIX}/MS64")
+        endif()
+    elseif(MINGW)
+        if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+            set(LIBUSB_SUFFIX "MinGW32")
+        else()
+            set(LIBUSB_SUFFIX "MinGW64")
+        endif()
     endif()
     set(LIBUSB_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/libusb/include)
+    set(LIBUSB_LIBRARIES ${CMAKE_SOURCE_DIR}/libusb/${LIBUSB_SUFFIX}/dll)
 endif()
 if(PKG_CONFIG_FOUND AND NOT LIBUSB_FOUND)
     message(FATAL_ERROR "LibUSB 1.0 required")
@@ -97,11 +106,13 @@ endif()
 ########################################################################
 # Install udev rules
 ########################################################################
-install(
-    FILES fobos-sdr.rules
-    DESTINATION "/etc/udev/rules.d"
-    COMPONENT "udev"
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    install(
+        FILES fobos-sdr.rules
+        DESTINATION "/etc/udev/rules.d"
+        COMPONENT "udev"
     )
+endif()
 ########################################################################
 
 ########################################################################
@@ -140,11 +151,11 @@ else()
 endif()
 
 target_include_directories(libfobos PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_SOURCE_DIR}>
-  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>/fobos
-  ${LIBUSB_INCLUDE_DIRS}
-  )
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>/fobos
+    ${LIBUSB_INCLUDE_DIRS}
+)
 
 set_target_properties(libfobos PROPERTIES DEFINE_SYMBOL "FOBOS_EXPORTS")
 set_target_properties(libfobos PROPERTIES OUTPUT_NAME fobos)
