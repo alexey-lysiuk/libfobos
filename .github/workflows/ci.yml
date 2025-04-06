@@ -94,9 +94,7 @@ jobs:
       if: startsWith(matrix.toolchain.name, 'MinGW')
       shell: cmd
       run: |
-        dumpbin /HEADERS fobos_devinfo.exe
-        dumpbin /IMPORTS fobos_devinfo.exe
-        build/fobos_devinfo.exe
+        build\fobos_devinfo.exe
 
     - name: Test MSVC
       if: startsWith(matrix.toolchain.name, 'MSVC')
