@@ -137,15 +137,20 @@ add_library(libfobos SHARED fobos/fobos.c)
 
 if(MSVC)
     target_compile_options(libfobos PUBLIC "/MT")
-    ADD_CUSTOM_COMMAND(TARGET libfobos
+    add_custom_command(TARGET libfobos
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/Debug
-        COMMAND ${CMAKE_COMMAND} -E copy ${LIBUSB_LIBRARIES}/libusb-1.0.dll ${PROJECT_BINARY_DIR}/Debug
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LIBUSB_LIBRARIES}/libusb-1.0.dll ${PROJECT_BINARY_DIR}/Debug
     )
-    ADD_CUSTOM_COMMAND(TARGET libfobos
+    add_custom_command(TARGET libfobos
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/Release
-        COMMAND ${CMAKE_COMMAND} -E copy ${LIBUSB_LIBRARIES}/libusb-1.0.dll ${PROJECT_BINARY_DIR}/Release
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LIBUSB_LIBRARIES}/libusb-1.0.dll ${PROJECT_BINARY_DIR}/Release
+    )
+elseif(MINGW)
+    add_custom_command(TARGET libfobos
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LIBUSB_LIBRARIES} ${PROJECT_BINARY_DIR}
     )
 endif()
 
