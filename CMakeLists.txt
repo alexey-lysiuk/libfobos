@@ -69,36 +69,26 @@ if(PKG_CONFIG_FOUND)
     if(LIBUSB_LINK_LIBRARIES)
         set(LIBUSB_LIBRARIES "${LIBUSB_LINK_LIBRARIES}")
     endif()
-else()
-    if(MSVC)
-        if(MSVC_VERSION EQUAL 1800)
-            set(LIBUSB_SUFFIX VS2013)
-        elseif(MSVC_VERSION EQUAL 1900)
-            set(LIBUSB_SUFFIX VS2015)
-        elseif((MSVC_VERSION GREATER_EQUAL 1910) AND (MSVC_VERSION LESS_EQUAL 1919))
-            set(LIBUSB_SUFFIX VS2017)
-        elseif((MSVC_VERSION GREATER_EQUAL 1920) AND (MSVC_VERSION LESS_EQUAL 1929))
-            set(LIBUSB_SUFFIX VS2019)
-        else()
-            set(LIBUSB_SUFFIX VS2022)
-        endif()
-
-        if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-            set(LIBUSB_SUFFIX "${LIBUSB_SUFFIX}/MS32")
-        else()
-            set(LIBUSB_SUFFIX "${LIBUSB_SUFFIX}/MS64")
-        endif()
-
-        set(LIBUSB_SUFFIX "${LIBUSB_SUFFIX}/dll")
-    elseif(MINGW)
-        if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-            set(LIBUSB_SUFFIX "MinGW32")
-        else()
-            set(LIBUSB_SUFFIX "MinGW64")
-        endif()
-
-        set(LIBUSB_SUFFIX "${LIBUSB_SUFFIX}/dll/libusb-1.0.dll")
+elseif(MSVC AND NOT DEFINED LIBUSB_INCLUDE_DIRS AND NOT DEFINED LIBUSB_LIBRARIES)
+    if(MSVC_VERSION EQUAL 1800)
+        set(LIBUSB_SUFFIX VS2013)
+    elseif(MSVC_VERSION EQUAL 1900)
+        set(LIBUSB_SUFFIX VS2015)
+    elseif((MSVC_VERSION GREATER_EQUAL 1910) AND (MSVC_VERSION LESS_EQUAL 1919))
+        set(LIBUSB_SUFFIX VS2017)
+    elseif((MSVC_VERSION GREATER_EQUAL 1920) AND (MSVC_VERSION LESS_EQUAL 1929))
+        set(LIBUSB_SUFFIX VS2019)
+    else()
+        set(LIBUSB_SUFFIX VS2022)
     endif()
+
+    if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+        set(LIBUSB_SUFFIX "${LIBUSB_SUFFIX}/MS32")
+    else()
+        set(LIBUSB_SUFFIX "${LIBUSB_SUFFIX}/MS64")
+    endif()
+
+    set(LIBUSB_SUFFIX "${LIBUSB_SUFFIX}/dll")
 
     set(LIBUSB_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/libusb/include)
     set(LIBUSB_LIBRARIES ${CMAKE_SOURCE_DIR}/libusb/${LIBUSB_SUFFIX})
@@ -146,11 +136,6 @@ if(MSVC)
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/Release
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LIBUSB_LIBRARIES}/libusb-1.0.dll ${PROJECT_BINARY_DIR}/Release
-    )
-elseif(MINGW)
-    add_custom_command(TARGET libfobos
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LIBUSB_LIBRARIES} ${PROJECT_BINARY_DIR}
     )
 endif()
 
