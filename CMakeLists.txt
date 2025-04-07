@@ -69,7 +69,7 @@ if(PKG_CONFIG_FOUND)
     if(LIBUSB_LINK_LIBRARIES)
         set(LIBUSB_LIBRARIES "${LIBUSB_LINK_LIBRARIES}")
     endif()
-else()
+elseif(NOT DEFINED LIBUSB_INCLUDE_DIRS AND NOT DEFINED LIBUSB_LIBRARIES)
     if(MSVC)
         if(MSVC_VERSION EQUAL 1800)
             set(LIBUSB_SUFFIX VS2013)
@@ -150,7 +150,7 @@ if(MSVC)
 elseif(MINGW)
     add_custom_command(TARGET libfobos
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LIBUSB_LIBRARIES} ${PROJECT_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LIBUSB_LIBRARIES} ${PROJECT_BINARY_DIR}/msys-usb-1.0.dll
     )
 endif()
 
