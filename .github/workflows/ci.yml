@@ -35,7 +35,6 @@ jobs:
 
         - name: MinGW 64-bit
           os: windows-2022
-          msystem: mingw64
           cmake_args: -G "MinGW Makefiles"
 
         - name: MSVC 32-bit
@@ -66,7 +65,9 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ matrix.toolchain.msystem }}
-        pacboy: pkg-config:p libsub:p
+        install: >-
+          pkg-config
+          libsub
 
     - name: Configure
       run: |
