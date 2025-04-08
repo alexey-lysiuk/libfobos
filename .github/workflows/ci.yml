@@ -86,16 +86,10 @@ jobs:
       run: |
         sudo cmake --install build
 
-    - name: Test Linux/macOS
-      if: runner.os != 'Windows'
+    - name: Test POSIX
+      if: ${{ !startsWith(matrix.toolchain.name, 'MSVC') }}
       run: |
         build/fobos_devinfo
-
-    - name: Test MinGW
-      if: startsWith(matrix.toolchain.name, 'MinGW')
-      shell: cmd
-      run: |
-        build\fobos_devinfo.exe
 
     - name: Test MSVC
       if: startsWith(matrix.toolchain.name, 'MSVC')
