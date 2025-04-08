@@ -5,7 +5,7 @@
 //    /    __ / / / /  _  \  / ___/  \ \/ /  / __ \  / __ \  / ___\ /  _/
 //   /  /\ \   / / /  /_/ / / /___   /   /  / /_/ / /  ___/ / /     / /_
 //  /_ /  \_\ /_/  \__   / /______/ /_/\_\ / ____/  \____/ /_/      \___/
-//               /______/                 /_/
+//               /______/                 /_/             
 //  Fobos SDR API library
 //  2024.03.21
 //  2024.04.08
@@ -26,7 +26,7 @@
 #ifdef _WIN32
 #include <conio.h>
 #include <Windows.h>
-#pragma comment(lib, "libusb-1.0.lib")
+#pragma comment(lib, "libusb-1.0.lib")                                             
 #define printf_internal _cprintf
 #else
 #include <unistd.h>
@@ -205,7 +205,7 @@ int fobos_rx_get_device_count(void)
         libusb_get_device_descriptor(list[i], &dd);
 #ifdef FOBOS_PRINT_DEBUG
         printf_internal("%04x:%04x\n", dd.idVendor, dd.idProduct);
-#endif // FOBOS_PRINT_DEBUG
+#endif // FOBOS_PRINT_DEBUG        
         if ((dd.idVendor == FOBOS_VENDOR_ID) &&
             (dd.idProduct == FOBOS_PRODUCT_ID) &&
             (dd.bcdDevice == FOBOS_DEV_ID))
@@ -1048,7 +1048,7 @@ int fobos_rx_get_board_info(struct fobos_dev_t * dev, char * hw_revision, char *
 #define FOBOS_INJECT_LOW         1
 #define FOBOS_INJECT_HIGH        2
 //==============================================================================
-typedef struct
+typedef struct 
 {
     uint32_t idx;
     uint32_t freq_mhz_min;
@@ -1193,7 +1193,7 @@ int fobos_rx_set_frequency(struct fobos_dev_t * dev, double value, double * actu
     int result = fobos_check(dev);
 #ifdef FOBOS_PRINT_DEBUG
     printf_internal("%s(%f);\n", __FUNCTION__, value);
-#endif // FOBOS_PRINT_DEBUG
+#endif // FOBOS_PRINT_DEBUG    
     if (result != FOBOS_ERR_OK)
     {
         return result;
@@ -1587,7 +1587,7 @@ int fobos_rx_get_samplerates(struct fobos_dev_t * dev, double * values, unsigned
 //==============================================================================
 const uint32_t fobos_p1s[] =
 {
-    10,
+    10, 
     16, 20, 25, 32, 40, 50, 64, 80, 100
 };
 //==============================================================================
@@ -2165,10 +2165,10 @@ int fobos_rx_read_sync(struct fobos_dev_t * dev, float * buf, uint32_t * actual_
     }
     result = libusb_bulk_transfer(
         dev->libusb_devh,
-        LIBUSB_BULK_IN_ENDPOINT,
-        dev->rx_sync_buf,
-        dev->transfer_buf_size,
-        &actual,
+        LIBUSB_BULK_IN_ENDPOINT, 
+        dev->rx_sync_buf, 
+        dev->transfer_buf_size, 
+        &actual, 
         LIBUSB_BULK_TIMEOUT);
     if (result == FOBOS_ERR_OK)
     {
