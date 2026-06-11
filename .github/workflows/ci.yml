@@ -16,28 +16,28 @@ jobs:
       matrix:
         toolchain:
         - name: Linux Clang
-          os: ubuntu-24.04
+          os: ubuntu-latest
           cmake_args: -DCMAKE_C_COMPILER=clang
 
         - name: Linux GCC
-          os: ubuntu-24.04
+          os: ubuntu-latest
 
         - name: macOS ARM
-          os: macos-14
+          os: macos-26
 
         - name: macOS Intel
-          os: macos-13
+          os: macos-26-intel
 
         - name: MinGW
-          os: windows-2022
+          os: windows-latest
           cmake_args: -G "MinGW Makefiles"
 
         - name: MSVC 32-bit
-          os: windows-2022
+          os: windows-latest
           cmake_args: -A Win32
 
         - name: MSVC 64-bit
-          os: windows-2022
+          os: windows-latest
 
     steps:
     - uses: actions/checkout@v4
