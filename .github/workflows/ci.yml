@@ -33,11 +33,11 @@ jobs:
           cmake_args: -G "MinGW Makefiles"
 
         - name: MSVC 32-bit
-          os: windows-latest
+          os: windows-2025
           cmake_args: -A Win32
 
         - name: MSVC 64-bit
-          os: windows-latest
+          os: windows-2025
 
     steps:
     - uses: actions/checkout@v4
@@ -61,16 +61,16 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B build ${{ matrix.toolchain.cmake_args }} .
+        if [[ "${{ runner.os }}" != 'Windows' ]]; then
+          cmake_args="$cmake_args -G Ninja"
+        fi
 
-    - name: Get Number of CPU Cores
-      uses: SimenB/github-actions-cpu-cores@v2
-      id: cpu-cores
+        cmake -B build $cmake_args .
 
     - name: Build
       run: |
         export MAKEFLAGS=--keep-going
-        cmake --build build --config Release --parallel ${{ steps.cpu-cores.outputs.count }}
+        cmake --build build --config Release
 
     - name: Install Linux/macOS
       if: runner.os != 'Windows'
